@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
 
 public class Button extends JButton implements MouseListener, ActionListener {
     private JButton button;
