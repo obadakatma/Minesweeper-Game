@@ -1,12 +1,14 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
 public class Grid extends JPanel {
     Random random = new Random();
     Image image;
+    private final int[][] gridArray = new int[9][9];
     private static final ArrayList<Button> buttons = new ArrayList<Button>();
     private final ArrayList<Boolean> bomb = new ArrayList<Boolean>(81);
     private final ArrayList<Integer> randomBomb = new ArrayList<Integer>(10);
@@ -21,7 +23,7 @@ public class Grid extends JPanel {
             bomb.add(false);
             buttonPressed.add(true);
         }
-        while (randomBomb.size() <= 10) {
+        while (randomBomb.size() < 10) {
             int randomNum = random.nextInt(81);
             if (!randomBomb.contains(randomNum)) {
                 randomBomb.add(randomNum);
@@ -39,6 +41,50 @@ public class Grid extends JPanel {
         this.state = state;
     }
 
+    public void bombPlace() {
+        int f = 0;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (bomb.get(f))
+                    gridArray[i][j] = 10;
+                f++;
+            }
+        }
+    }
+
+    public void setValues() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                int ct = 0;
+                //left
+                if (i > 0 && gridArray[i - 1][j] == 10)
+                    ct++;
+                //right
+                if (i < 9 - 1 && gridArray[i + 1][j] == 10)
+                    ct++;
+                //up
+                if (j > 0 && gridArray[i][j - 1] == 10)
+                    ct++;
+                //down
+                if (j < 9 - 1 && gridArray[i][j + 1] == 10)
+                    ct++;
+                //top left
+                if (i > 0 && j > 0 && gridArray[i - 1][j - 1] == 10)
+                    ct++;
+                //top right
+                if (i < 9 - 1 && j > 0 && gridArray[i + 1][j - 1] == 10)
+                    ct++;
+                //bottom left
+                if (i > 0 && j < 9 - 1 && gridArray[i - 1][j + 1] == 10)
+                    ct++;
+                //bottom right
+                if (i < 9 - 1 && j < 9 - 1 && gridArray[i + 1][j + 1] == 10)
+                    ct++;
+                gridArray[i][j] = ct;
+            }
+        }
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -53,30 +99,31 @@ public class Grid extends JPanel {
         }
         int k = 0;
         setLayout(new GridLayout(9, 9, 2, 2));
-        for (int i = 0; i < 270; i += 30) {
-            for (int j = 0; j < 270; j += 30) {
-                setState(0);
+        setValues();
+        bombPlace();
+        for (int i = 0, o = 0; i < 270 && o < 9; i += 30, o++) {
+            for (int j = 0, u = 0; j < 270 && u < 9; j += 30, u++) {
+                setState(gridArray[o][u]);
                 g2.drawImage(setImage(), 3 + j, 3 + i, 28, 28, null);
                 buttons.add(new Button(i, j));
-                add(buttons.get(k).getButton());
-                buttonPressed.set(k,buttons.get(k).getButtonVisible());
+//                add(buttons.get(k).getButton());
+                buttonPressed.set(k, buttons.get(k).getButtonVisible());
+                if (!buttonPressed.get(k)) {
+                    if (gridArray[o][u] == 0) {
+                        if (bomb.get(k - 2))
+                            buttons.get(k - 1).setButtonVisible(false);
+                    }
+
+                }
                 k++;
             }
         }
-        int m = 0;
-        for (int i = 0; i < 270; i += 30) {
-            for (int j = 0; j < 270 && m < 81; j += 30, m++) {
-
-                if (bomb.get(m)) {
-                    setState(10);
-                    g2.drawImage(setImage(), 3 + j, 3 + i, 28, 28, null);
-                } else {
-                    setState(0);
-                    g2.drawImage(setImage(), 3 + j, 3 + i, 28, 28, null);
-                }
-            }
+        if (checkLose()) {
+            JOptionPane.showMessageDialog(null, "YOU LOSE\nGAME OVER", "Minesweeper", JOptionPane.INFORMATION_MESSAGE);
         }
         System.out.println(buttonPressed);
+        System.out.println(bomb);
+        System.out.println(checkLose());
     }
 
     public Image setImage() {
@@ -127,5 +174,8 @@ public class Grid extends JPanel {
 
         }
         return image;
+    }
+    public boolean checkLose() {
+        return buttonPressed.indexOf(false) == bomb.indexOf(true);
     }
 }

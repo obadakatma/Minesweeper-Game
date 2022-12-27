@@ -21,6 +21,7 @@ public class Button extends JButton implements MouseListener, ActionListener {
         button.setMaximumSize(button.getPreferredSize());
         button.setBounds(3 + j, 3 + i, 28, 28);
         button.addMouseListener(this);
+        button.addActionListener(this);
         setImageButton();
 
     }
@@ -28,14 +29,16 @@ public class Button extends JButton implements MouseListener, ActionListener {
     public void setStateButton(int state1) {
         state = state1;
     }
-    public void setButtonVisible(boolean visible)
-    {
+
+    public void setButtonVisible(boolean visible) {
+        button.setVisible(visible);
         buttonVisible = visible;
     }
-    public boolean getButtonVisible()
-    {
+
+    public boolean getButtonVisible() {
         return buttonVisible;
     }
+
     public JButton getButton() {
         return button;
     }
@@ -91,7 +94,6 @@ public class Button extends JButton implements MouseListener, ActionListener {
                 setImageButton();
             }
         } else if (e.getButton() == 1 && !rightPressed) {
-            button.setVisible(false);
             setButtonVisible(false);
         }
 
@@ -109,6 +111,6 @@ public class Button extends JButton implements MouseListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        setButtonVisible(getButtonVisible());
     }
 }

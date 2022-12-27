@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.xml.stream.Location;
 import java.awt.*;
 
 public class Game extends JFrame {
@@ -12,6 +13,7 @@ public class Game extends JFrame {
         setVisible(true);
         setResizable(false);
         setSize(288, 310);
+        setLocation(816,385);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
