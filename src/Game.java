@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.xml.stream.Location;
 import java.awt.*;
 
 public class Game extends JFrame {

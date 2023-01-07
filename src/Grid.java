@@ -1,7 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
@@ -106,7 +105,7 @@ public class Grid extends JPanel {
                 setState(gridArray[o][u]);
                 g2.drawImage(setImage(), 3 + j, 3 + i, 28, 28, null);
                 buttons.add(new Button(i, j));
-//                add(buttons.get(k).getButton());
+                add(buttons.get(k).getButton());
                 buttonPressed.set(k, buttons.get(k).getButtonVisible());
                 if (!buttonPressed.get(k)) {
                     if (gridArray[o][u] == 0) {
@@ -175,7 +174,12 @@ public class Grid extends JPanel {
         }
         return image;
     }
+
     public boolean checkLose() {
-        return buttonPressed.indexOf(false) == bomb.indexOf(true);
+        for (int i = 0; i < 81; i++) {
+            if (buttonPressed.get(i) == false && bomb.get(i) == true)
+                return true;
+        }
+        return false;
     }
 }
